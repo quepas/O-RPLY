@@ -38,8 +38,8 @@ public:
     bool LoadFromDescriptor(FILE* fd);
     bool LoadFromMemory();
 
-    bool StoreToPath(const std::string& path);
-    bool StoreToDescriptor(FILE* fd);
+    bool StoreToPath(const std::string &path, bool binary_format);
+    bool StoreToDescriptor(FILE* fd, bool binary_format);
     bool StoreToMemory();
 
     size_t NumVertices() { return vertices.size(); }
@@ -73,6 +73,7 @@ private:
     std::vector<Face> faces;
 
     bool LoadPLY(p_ply& ply);
+    bool StorePLY(p_ply& ply);
 
 };
 
