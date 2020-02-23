@@ -25,3 +25,5 @@ jobs:
         cmake CMakeLists.txt
     - name: "Build project"
       run: make
+    - name: "Run unit test"
+      run: cd bin/ && ./tests
