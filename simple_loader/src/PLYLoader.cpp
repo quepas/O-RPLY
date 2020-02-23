@@ -2,7 +2,7 @@
 // Created by quepas on 23/02/2020.
 //
 
-#include "../include/PLYLoader.hpp"
+#include "PLYLoader.hpp"
 
 #include <filesystem>
 #include <iostream>

@@ -10,20 +10,10 @@ set ( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin/ )
 set ( CATCH2_DIR third-party/Catch2 )
 add_subdirectory ( ${CATCH2_DIR} )
 
-add_library( librply STATIC
-        src/rply.c
-        simple_loader/src/PLYLoader.cpp )
+add_library( librply STATIC src/rply.c )
 set_property(TARGET librply PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_include_directories( librply PUBLIC include/)
 
 add_subdirectory( simple_loader )
 add_subdirectory( tests )
-
-add_executable( convert tools/convert.c )
-target_link_libraries( convert librply )
-
-add_executable( dump tools/dump.c )
-target_link_libraries( dump librply )
-
-add_executable( sconvert tools/sconvert.c )
-target_link_libraries( sconvert librply )
+add_subdirectory( tools )
