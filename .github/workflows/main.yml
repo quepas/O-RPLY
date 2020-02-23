@@ -1,0 +1,27 @@
+name: "Build (linux/gcc9)"
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: "Install gcc/g++ 9.0"
+      run: |
+        wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+        sudo apt update
+        sudo apt install software-properties-common -y
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+        sudo apt update
+        sudo apt install gcc-9 g++-9 -y
+    - name: "Checkout the repository"
+      uses: actions/checkout@v2
+    - name: "Checkout submodules"
+      run: git submodule update --init --recursive
+    - name: "Generate build scripts as Unix Makefile"
+      run: |
+        export CC=/usr/bin/gcc-9
+        export CXX=/usr/bin/g++-9
+        cmake CMakeLists.txt
+    - name: "Build project"
+      run: make
