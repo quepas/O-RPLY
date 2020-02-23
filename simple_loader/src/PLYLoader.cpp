@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <iostream>
 #include <rplyfile.h>
+#include <rplymemory.h>
 
 namespace fs = std::filesystem;
 using std::cerr;
@@ -33,6 +34,15 @@ bool PLYLoader::LoadFromDescriptor(FILE *fd) {
         return false;
     }
     p_ply ply = ply_open_from_file(fd, nullptr, 0, nullptr);
+    return LoadPLY(ply);
+}
+
+bool PLYLoader::LoadFromMemory(const char *buffer) {
+    if (!buffer) {
+        cerr << "Empty buffer" << endl;
+        return false;
+    }
+    p_ply ply = ply_open_from_memory(buffer, nullptr, 0, nullptr);
     return LoadPLY(ply);
 }
 

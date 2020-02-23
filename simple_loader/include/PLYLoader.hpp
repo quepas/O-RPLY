@@ -36,7 +36,7 @@ public:
 
     bool LoadFromPath(const std::string& path);
     bool LoadFromDescriptor(FILE* fd);
-    bool LoadFromMemory();
+    bool LoadFromMemory(const char* buffer);
 
     bool StoreToPath(const std::string &path, bool binary_format);
     bool StoreToDescriptor(FILE* fd, bool binary_format);

@@ -7,7 +7,19 @@
 #include <PLYLoader.hpp>
 #include "catch2/catch.hpp"
 
-TEST_CASE("Loading PLY files", "[load_ply_files]") {
+const char* LoadPLYFileAsBuffer(const std::string& file_path) {
+    FILE *f = fopen(file_path.c_str(), "rb");
+    fseek(f, 0, SEEK_END);
+    long fsize = ftell(f);
+    fseek(f, 0, SEEK_SET);
+
+    char *buffer = (char *)malloc(fsize + 1);
+    fread(buffer, fsize, 1, f);
+    fclose(f);
+    return buffer;
+}
+
+TEST_CASE("Loading PLY files from disc", "[load_ply_files]") {
 
     PLYLoader ply_loader;
 
@@ -48,7 +60,59 @@ TEST_CASE("Loading PLY files", "[load_ply_files]") {
     }
 }
 
-TEST_CASE("Storing PLY files", "[store_ply_files]") {
+TEST_CASE("Loading PLY files from memory", "[load_ply_files_memory]") {
+
+    PLYLoader ply_loader, ply_store;
+
+    SECTION("Load cow.ply from memory (ascii)") {
+        const char* buffer = LoadPLYFileAsBuffer("../ply_files/cow.ply");
+        REQUIRE(buffer != nullptr);
+        REQUIRE(ply_loader.LoadFromMemory(buffer));
+        delete[] buffer;
+        REQUIRE(ply_loader.NumVertices() == 2903);
+        REQUIRE(ply_loader.NumNormals() == 0);
+        REQUIRE(ply_loader.NumColours() == 0);
+        REQUIRE(ply_loader.NumFaces() == 5804);
+    }
+
+    SECTION("Load airplane.ply from memory (ascii)") {
+        const char* buffer = LoadPLYFileAsBuffer("../ply_files/airplane.ply");
+        REQUIRE(buffer != nullptr);
+        REQUIRE(ply_loader.LoadFromMemory(buffer));
+        REQUIRE(ply_loader.NumVertices() == 1335);
+        REQUIRE(ply_loader.NumNormals() == 0);
+        REQUIRE(ply_loader.NumColours() == 0);
+        REQUIRE(ply_loader.NumFaces() == 2452);
+    }
+
+    SECTION("Load cow.ply from memory (binary)") {
+        ply_store.LoadFromPath("../ply_files/cow.ply");
+        ply_store.StoreToPath("cow_binary.ply", true);
+        const char* buffer = LoadPLYFileAsBuffer("cow_binary.ply");
+        REQUIRE(buffer != nullptr);
+        REQUIRE(ply_loader.LoadFromMemory(buffer));
+        delete[] buffer;
+        REQUIRE(ply_loader.NumVertices() == 2903);
+        REQUIRE(ply_loader.NumNormals() == 0);
+        REQUIRE(ply_loader.NumColours() == 0);
+        REQUIRE(ply_loader.NumFaces() == 5804);
+    }
+
+    SECTION("Load airplane.ply from memory (binary)") {
+        ply_store.LoadFromPath("../ply_files/airplane.ply");
+        ply_store.StoreToPath("airplane_binary.ply", true);
+        const char* buffer = LoadPLYFileAsBuffer("airplane_binary.ply");
+        REQUIRE(buffer != nullptr);
+        REQUIRE(ply_loader.LoadFromMemory(buffer));
+        REQUIRE(ply_loader.NumVertices() == 1335);
+        REQUIRE(ply_loader.NumNormals() == 0);
+        REQUIRE(ply_loader.NumColours() == 0);
+        REQUIRE(ply_loader.NumFaces() == 2452);
+    }
+
+}
+
+TEST_CASE("Storing PLY files on disc", "[store_ply_files]") {
 
     PLYLoader ply_store, ply_loader;
 
