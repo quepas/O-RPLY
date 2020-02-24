@@ -3,7 +3,7 @@
 /* ----------------------------------------------------------------------
  * Modified RPly 1.1.4 library by Diego Nehab
  *
- * Functions in this file load and store PLY files from memory.
+ * Functions in this file load and store PLY files in memory.
  * Patryk Kiepas, Institute for Not-so-Advanced Study
  * https://github.com/quepas/libRPly
  *
@@ -16,16 +16,32 @@ extern "C" {
 #endif
 
 /* ----------------------------------------------------------------------
- * Opens a PLY file for reading from memory (buffer of chars)
+ * Opens a PLY file for reading from memory (buffer of char[])
  *
- * buffer: file in the memory for reading
- * error_cb: error callback function
- * idata,pdata: contextual information available to users
+ * buffer      : file in the memory for reading
+ * error_cb    : error callback function
+ * idata,pdata : contextual information available to users
  *
  * Returns 1 if successful, 0 otherwise
  * ---------------------------------------------------------------------- */
 p_ply ply_open_from_memory(const char *buffer, p_ply_error_cb error_cb,
     long idata, void *pdata);
+
+/* ----------------------------------------------------------------------
+ * Creates new PLY file for writing in memory (to a buffer of char[])
+ *
+ * buffer       : memory for storing the file
+ * buffer_size  : size of pre-allocated memory for the buffer
+ * ply_size     : actual size of the PLY file in memory
+ * storage_mode : file format mode
+ * error_cb     : error callback function
+ * idata, pdata : contextual information available to users
+ *
+ * Returns handle to PLY file if successful, NULL otherwise
+ * ---------------------------------------------------------------------- */
+p_ply
+ply_create_to_memory(char *buffer, size_t buffer_size, size_t *ply_size, e_ply_storage_mode storage_mode,
+                     p_ply_error_cb error_cb, long idata, void *pdata);
 
 #ifdef __cplusplus
 }

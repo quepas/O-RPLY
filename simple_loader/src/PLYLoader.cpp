@@ -15,6 +15,8 @@ using std::endl;
 using std::string;
 using std::vector;
 
+#define CHECK_FOR_ERRORS(cond) if (!cond) return false;
+
 bool PLYLoader::LoadFromPath(const string &path) {
     if (path.empty()) {
         cerr << "Empty path" << endl;
@@ -151,6 +153,14 @@ bool PLYLoader::StoreToDescriptor(FILE *fd, bool binary_format) {
     return StorePLY(ply);
 }
 
+bool PLYLoader::StoreToMemory(char *&buffer, size_t &ply_size, bool binary_format, size_t max_buffer_size /* 5MB */) {
+    buffer = new char[max_buffer_size];
+    p_ply ply = ply_create_to_memory(buffer, max_buffer_size, &ply_size, binary_format ? PLY_LITTLE_ENDIAN : PLY_ASCII,
+                                     nullptr, 0,
+                                     nullptr);
+    return StorePLY(ply);
+}
+
 bool PLYLoader::StorePLY(p_ply &ply) {
     if (!ply) {
         cerr << "Invalid PLY handler" << endl;
@@ -161,27 +171,27 @@ bool PLYLoader::StorePLY(p_ply &ply) {
     bool write_normals = (NumNormals() == num_vertices);
 
     if (ply_add_element(ply, "vertex", num_vertices)) {
-        ply_add_scalar_property(ply, "x", PLY_FLOAT);
-        ply_add_scalar_property(ply, "y", PLY_FLOAT);
-        ply_add_scalar_property(ply, "z", PLY_FLOAT);
+        CHECK_FOR_ERRORS(ply_add_scalar_property(ply, "x", PLY_FLOAT));
+        CHECK_FOR_ERRORS(ply_add_scalar_property(ply, "y", PLY_FLOAT));
+        CHECK_FOR_ERRORS(ply_add_scalar_property(ply, "z", PLY_FLOAT));
     }
     if (write_colors) {
-        ply_add_scalar_property(ply, "red", PLY_UCHAR);
-        ply_add_scalar_property(ply, "green", PLY_UCHAR);
-        ply_add_scalar_property(ply, "blue", PLY_UCHAR);
+        CHECK_FOR_ERRORS(ply_add_scalar_property(ply, "red", PLY_UCHAR));
+        CHECK_FOR_ERRORS(ply_add_scalar_property(ply, "green", PLY_UCHAR));
+        CHECK_FOR_ERRORS(ply_add_scalar_property(ply, "blue", PLY_UCHAR));
     }
     if (write_normals) {
-        ply_add_scalar_property(ply, "nx", PLY_FLOAT);
-        ply_add_scalar_property(ply, "ny", PLY_FLOAT);
-        ply_add_scalar_property(ply, "nz", PLY_FLOAT);
+        CHECK_FOR_ERRORS(ply_add_scalar_property(ply, "nx", PLY_FLOAT));
+        CHECK_FOR_ERRORS(ply_add_scalar_property(ply, "ny", PLY_FLOAT));
+        CHECK_FOR_ERRORS(ply_add_scalar_property(ply, "nz", PLY_FLOAT));
     }
     if (NumFaces() > 0) {
         if (ply_add_element(ply, "face", NumFaces())) {
-            ply_add_list_property(ply, "vertex_indices", PLY_UCHAR, PLY_INT);
+            CHECK_FOR_ERRORS(ply_add_list_property(ply, "vertex_indices", PLY_UCHAR, PLY_INT));
         }
     }
-    ply_add_comment(ply, "PLYLoader");
-    ply_add_obj_info(ply, "Generated using libRPly and PLYLoader");
+    CHECK_FOR_ERRORS(ply_add_comment(ply, "PLYLoader"));
+    CHECK_FOR_ERRORS(ply_add_obj_info(ply, "Generated using libRPly and PLYLoader"));
 
     if (!ply_write_header(ply)) {
         cerr << "Error writing file header" << endl;
@@ -193,29 +203,29 @@ bool PLYLoader::StorePLY(p_ply &ply) {
 
     for (size_t index = 0; index < num_vertices; ++index) {
         auto vertex = vertices[index];
-        ply_write(ply, vertex.x);
-        ply_write(ply, vertex.y);
-        ply_write(ply, vertex.z);
+        CHECK_FOR_ERRORS(ply_write(ply, vertex.x));
+        CHECK_FOR_ERRORS(ply_write(ply, vertex.y));
+        CHECK_FOR_ERRORS(ply_write(ply, vertex.z));
 
         if (write_colors) {
             auto color = colours[index];
-            ply_write(ply, color.red);
-            ply_write(ply, color.green);
-            ply_write(ply, color.blue);
+            CHECK_FOR_ERRORS(ply_write(ply, color.red));
+            CHECK_FOR_ERRORS(ply_write(ply, color.green));
+            CHECK_FOR_ERRORS(ply_write(ply, color.blue));
         }
         if (write_normals) {
             auto normal = normals[index];
-            ply_write(ply, normal.nx);
-            ply_write(ply, normal.ny);
-            ply_write(ply, normal.nz);
+            CHECK_FOR_ERRORS(ply_write(ply, normal.nx));
+            CHECK_FOR_ERRORS(ply_write(ply, normal.ny));
+            CHECK_FOR_ERRORS(ply_write(ply, normal.nz));
         }
     }
     for (size_t index = 0; index < NumFaces(); ++index) {
         auto face = faces[index];
-        ply_write(ply, 3);
-        ply_write(ply, face.vertex_indices[0]);
-        ply_write(ply, face.vertex_indices[1]);
-        ply_write(ply, face.vertex_indices[2]);
+        CHECK_FOR_ERRORS(ply_write(ply, 3));
+        CHECK_FOR_ERRORS(ply_write(ply, face.vertex_indices[0]));
+        CHECK_FOR_ERRORS(ply_write(ply, face.vertex_indices[1]));
+        CHECK_FOR_ERRORS(ply_write(ply, face.vertex_indices[2]));
     }
     if (!ply_close(ply)) {
         cerr << "Failed at closing the file" << endl;

@@ -40,7 +40,7 @@ public:
 
     bool StoreToPath(const std::string &path, bool binary_format);
     bool StoreToDescriptor(FILE* fd, bool binary_format);
-    bool StoreToMemory();
+    bool StoreToMemory(char *&buffer, size_t &ply_size, bool binary_format, size_t max_buffer_size = 5 * 1024 * 1024 /* 5MB */);
 
     size_t NumVertices() { return vertices.size(); }
     size_t NumNormals() { return normals.size(); }
@@ -65,7 +65,6 @@ public:
     typedef DataConsumer<Colour, 3, unsigned char> ColourConsumer;
     typedef DataConsumer<Face, 3, unsigned int> FaceConsumer;
 
-
 private:
     std::vector<Vertex> vertices;
     std::vector<Normal> normals;
@@ -76,7 +75,5 @@ private:
     bool StorePLY(p_ply& ply);
 
 };
-
-
 
 #endif //LIBRPLY_PLYLOADER_HPP
