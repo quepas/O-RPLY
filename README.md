@@ -1,10 +1,10 @@
-# O rply?
+# O RPLY?
 
-_**O rply?**_ is a C/C++ library for PLY file format load and store. You might ask o rly? But yes! It is built over [RPly 1.1.4 by Diego Nehab](http://w3.impa.br/~diego/software/rply/) with three improvements: 1) [CMake build](CMakeLists.txt) 2) in-memory load and store; and 3) implementation of a [simple loader for PLY files](simple_loader/). 
+_**O RPLY?**_ is a C/C++ library for PLY file format load and store. You might ask O RLY? YA RLY. It is built over [RPly 1.1.4 by Diego Nehab](http://w3.impa.br/~diego/software/rply/) with three improvements: 1) [CMake build](CMakeLists.txt) 2) in-memory load and store; and 3) implementation of a [simple loader for PLY files](simple_loader/). NO WAI!!  
 
 This _petite library_ exists only due to the immense work of [Diego Nehab](http://w3.impa.br/~diego/). Thank you!
 
-![Build (linux/gcc9)](https://github.com/quepas/o-rply/workflows/Build%20(linux/gcc9)/badge.svg?branch=master)
+![Build (linux/gcc9)](https://github.com/quepas/O-RPLY/workflows/Build%20(linux/gcc9)/badge.svg?branch=master)
 
 ## What's new?
 
@@ -25,11 +25,11 @@ On Linux-based systems:
 
 1. Clone this repository:
     ```shell script
-    git clone https://github.com/quepas/o-rply.git
+    git clone https://github.com/quepas/O-RPLY.git
     ```
 2. Pull dependencies (e.g. [Catch2](https://github.com/catchorg/Catch2/))
     ```shell script
-    cd o-rply/
+    cd O-RPLY/
     git submodule update --init --recursive
     ```
 3. Prepare build scripts and build the project!
@@ -38,9 +38,9 @@ On Linux-based systems:
     make
     ```
    
-## _O rply?_ in your CMake project
+## _O RPLY?_ in your CMake project
 
-Let's imagine your project contains only one source file _main.cpp_ and _O rply?_ is in the _third-party/_ directory.
+Let's imagine your project contains only one source file _main.cpp_ and _O RPLY?_ is in the _third-party/_ directory.
 Now, all you have to do is this:
 
 ```CMake
@@ -48,8 +48,8 @@ cmake_minimum_required( VERSION 3.0 )
 
 project( name-of-your-project VERSION 1.0 )
 
-add_subdirectory( third-party/o-rply )
+add_subdirectory( third-party/O-RPLY )
 
 add_executable( your-app src/main.cpp)
-target_link_libraries( your-app o-rply-lib ) # Include the O-rply? library
+target_link_libraries( your-app o-rply-lib ) # Include the O-RPLY? library
 ```
