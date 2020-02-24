@@ -26,4 +26,4 @@ jobs:
     - name: "Build project"
       run: make
     - name: "Run unit test"
-      run: cd bin/ && ./tests
+      run: cd bin/ && ./o-rply-tests
