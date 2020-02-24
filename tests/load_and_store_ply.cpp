@@ -201,12 +201,12 @@ TEST_CASE("Storing PLY files in memory", "[store_ply_files_memory]") {
 
     PLYLoader ply_store, ply_loader;
 
-    SECTION("Store cow.ply to memory as ascii") {
+    SECTION("Store cow.ply in memory as ascii") {
         REQUIRE(ply_store.LoadFromPath("../ply_files/cow.ply"));
         char* buffer;
         size_t ply_size;
         REQUIRE(ply_store.StoreToMemory(buffer, ply_size, false));
-        ply_loader.LoadFromMemory(buffer);
+        REQUIRE(ply_loader.LoadFromMemory(buffer));
         delete[] buffer;
         REQUIRE(ply_loader.NumVertices() == 2903);
         REQUIRE(ply_loader.NumNormals() == 0);
@@ -214,12 +214,39 @@ TEST_CASE("Storing PLY files in memory", "[store_ply_files_memory]") {
         REQUIRE(ply_loader.NumFaces() == 5804);
     }
 
-    SECTION("Store airplane.ply to memory as ascii") {
+    SECTION("Store cow.ply in memory as binary") {
+        ply_store.Clear();
+        REQUIRE(ply_store.LoadFromPath("../ply_files/cow.ply"));
+        char* buffer;
+        size_t ply_size;
+        REQUIRE(ply_store.StoreToMemory(buffer, ply_size, true));
+        REQUIRE(ply_loader.LoadFromMemory(buffer));
+        delete[] buffer;
+        REQUIRE(ply_loader.NumVertices() == 2903);
+        REQUIRE(ply_loader.NumNormals() == 0);
+        REQUIRE(ply_loader.NumColours() == 0);
+        REQUIRE(ply_loader.NumFaces() == 5804);
+    }
+
+    SECTION("Store airplane.ply in memory as ascii") {
         REQUIRE(ply_store.LoadFromPath("../ply_files/airplane.ply"));
         char* buffer;
         size_t ply_size;
         REQUIRE(ply_store.StoreToMemory(buffer, ply_size, false));
-        ply_loader.LoadFromMemory(buffer);
+        REQUIRE(ply_loader.LoadFromMemory(buffer));
+        delete[] buffer;
+        REQUIRE(ply_loader.NumVertices() == 1335);
+        REQUIRE(ply_loader.NumNormals() == 0);
+        REQUIRE(ply_loader.NumColours() == 0);
+        REQUIRE(ply_loader.NumFaces() == 2452);
+    }
+
+    SECTION("Store airplane.ply in memory as binary") {
+        REQUIRE(ply_store.LoadFromPath("../ply_files/airplane.ply"));
+        char* buffer;
+        size_t ply_size;
+        REQUIRE(ply_store.StoreToMemory(buffer, ply_size, true));
+        REQUIRE(ply_loader.LoadFromMemory(buffer));
         delete[] buffer;
         REQUIRE(ply_loader.NumVertices() == 1335);
         REQUIRE(ply_loader.NumNormals() == 0);
