@@ -250,7 +250,7 @@ static void ply_reverse(void *anydata, size_t size);
 /* ----------------------------------------------------------------------
  * In memory I/O functions
  * ---------------------------------------------------------------------- */
-static int ply_store_buffer_in_memory(p_ply ply, char *numeric);
+static int ply_store_buffer_in_memory(p_ply ply, char *buffer);
 
 /* ----------------------------------------------------------------------
  * String functions
@@ -410,6 +410,7 @@ p_ply ply_open_from_file(FILE *fp, p_ply_error_cb error_cb,
         error_cb(NULL, "Out of memory");
         return NULL;
     }
+    ply->in_memory = false;
     ply->idata = idata;
     ply->pdata = pdata;
     ply->io_mode = PLY_READ;
@@ -541,6 +542,7 @@ p_ply ply_create_to_file(FILE *fp, e_ply_storage_mode storage_mode,
         error_cb(NULL, "Out of memory");
         return NULL;
     }
+    ply->in_memory = false;
     ply->idata = idata;
     ply->pdata = pdata;
     ply->io_mode = PLY_WRITE;
@@ -851,6 +853,8 @@ int ply_close(p_ply ply) {
         if (ply->in_memory) {
             if (ply->buffer_last > 0) {
                 memcpy(ply->store_memory, ply->buffer, ply->buffer_last);
+                ply->store_memory += ply->buffer_last;
+                *(ply->store_memory_size) += ply->buffer_last;
             }
         } else {
             if (fwrite(ply->buffer, 1, ply->buffer_last, ply->fp) < ply->buffer_last) {
@@ -1260,7 +1264,8 @@ static int ply_write_chunk(p_ply ply, void *anybuffer, size_t size) {
             ply->buffer_last = 0;
             if (ply->in_memory) {
                 memcpy(ply->store_memory, ply->buffer, BUFFERSIZE);
-                return 1;
+                ply->store_memory += BUFFERSIZE;
+                *(ply->store_memory_size) += BUFFERSIZE;
             } else {
                 if (fwrite(ply->buffer, 1, BUFFERSIZE, ply->fp) < BUFFERSIZE)
                     return 0;
@@ -1295,17 +1300,17 @@ static void ply_reverse(void *anydata, size_t size) {
     }
 }
 
-static int ply_store_buffer_in_memory(p_ply ply, char *numeric) {
+static int ply_store_buffer_in_memory(p_ply ply, char *buffer) {
     assert(ply && ply->io_mode == PLY_WRITE && ply->store_memory);
-    size_t numeric_size = strlen(numeric);
-    if (*ply->store_memory_size + numeric_size > ply->store_buffer_size) {
+    size_t length = strlen(buffer);
+    if (*ply->store_memory_size + length > ply->store_buffer_size) {
         ply_ferror(ply, "The store buffer is too small. Use a bigger one!");
         return 0;
     }
-    memcpy(ply->store_memory, numeric, numeric_size);
-    ply->store_memory += numeric_size;
-    *(ply->store_memory_size) += numeric_size;
-    return numeric_size > 0;
+    memcpy(ply->store_memory, buffer, length);
+    ply->store_memory += length;
+    *(ply->store_memory_size) += length;
+    return length > 0;
 }
 
 static void ply_init(p_ply ply) {
