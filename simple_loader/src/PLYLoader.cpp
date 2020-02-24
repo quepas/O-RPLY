@@ -97,26 +97,26 @@ bool PLYLoader::LoadPLY(p_ply &ply) {
     // At this point, we need to remove the previously loaded model
     Clear();
     // Read vertices
-    DataConsumer<Vertex, 3, float> vertexConsumer(vertices);
-    long num_verts = ply_set_read_cb(ply, "vertex", "x", vertex_cb, &vertexConsumer, 0);
-    ply_set_read_cb(ply, "vertex", "y", vertex_cb, &vertexConsumer, 1);
-    ply_set_read_cb(ply, "vertex", "z", vertex_cb, &vertexConsumer, 2);
+    DataConsumer<Vertex, 3, float> vertex_consumer(vertices);
+    long num_verts = ply_set_read_cb(ply, "vertex", "x", vertex_cb, &vertex_consumer, 0);
+    ply_set_read_cb(ply, "vertex", "y", vertex_cb, &vertex_consumer, 1);
+    ply_set_read_cb(ply, "vertex", "z", vertex_cb, &vertex_consumer, 2);
     vertices.reserve(num_verts);
     // Read colors
-    ColourConsumer colourConsumer(colours);
-    long num_colors = ply_set_read_cb(ply, "vertex", "red", colour_cb, &colourConsumer, 0);
-    ply_set_read_cb(ply, "vertex", "green", colour_cb, &colourConsumer, 1);
-    ply_set_read_cb(ply, "vertex", "blue", colour_cb, &colourConsumer, 2);
+    ColourConsumer colour_consumer(colours);
+    long num_colors = ply_set_read_cb(ply, "vertex", "red", colour_cb, &colour_consumer, 0);
+    ply_set_read_cb(ply, "vertex", "green", colour_cb, &colour_consumer, 1);
+    ply_set_read_cb(ply, "vertex", "blue", colour_cb, &colour_consumer, 2);
     colours.reserve(num_colors);
     // Read normals
-    NormalConsumer normalConsumer(normals);
-    long num_normals = ply_set_read_cb(ply, "vertex", "nx", normal_cb, &normalConsumer, 0);
-    ply_set_read_cb(ply, "vertex", "ny", normal_cb, &normalConsumer, 1);
-    ply_set_read_cb(ply, "vertex", "nz", normal_cb, &normalConsumer, 2);
+    NormalConsumer normal_consumer(normals);
+    long num_normals = ply_set_read_cb(ply, "vertex", "nx", normal_cb, &normal_consumer, 0);
+    ply_set_read_cb(ply, "vertex", "ny", normal_cb, &normal_consumer, 1);
+    ply_set_read_cb(ply, "vertex", "nz", normal_cb, &normal_consumer, 2);
     normals.reserve(num_normals);
     // Read faces
-    FaceConsumer faceConsumer(faces);
-    long num_faces = ply_set_read_cb(ply, "face", "vertex_indices", face_cb, &faceConsumer, 0);
+    FaceConsumer face_consumer(faces);
+    long num_faces = ply_set_read_cb(ply, "face", "vertex_indices", face_cb, &face_consumer, 0);
     faces.reserve(num_faces);
 
     if (!ply_read(ply)) {
@@ -191,7 +191,7 @@ bool PLYLoader::StorePLY(p_ply &ply) {
         }
     }
     CHECK_FOR_ERRORS(ply_add_comment(ply, "PLYLoader"));
-    CHECK_FOR_ERRORS(ply_add_obj_info(ply, "Generated using libRPly and PLYLoader"));
+    CHECK_FOR_ERRORS(ply_add_obj_info(ply, "Generated using o-rply? and PLYLoader"));
 
     if (!ply_write_header(ply)) {
         cerr << "Error writing file header" << endl;

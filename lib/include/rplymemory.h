@@ -5,7 +5,7 @@
  *
  * Functions in this file load and store PLY files in memory.
  * Patryk Kiepas, Institute for Not-so-Advanced Study
- * https://github.com/quepas/libRPly
+ * https://github.com/quepas/o-rply
  *
  * This library is distributed under the MIT License. See notice
  * at the end of this file.

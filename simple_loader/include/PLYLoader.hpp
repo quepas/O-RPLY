@@ -2,8 +2,8 @@
 // Created by quepas on 23/02/2020.
 //
 
-#ifndef LIBRPLY_PLYLOADER_HPP
-#define LIBRPLY_PLYLOADER_HPP
+#ifndef O_RPLY_PLYLOADER_HPP
+#define O_RPLY_PLYLOADER_HPP
 
 #include <string>
 #include <vector>
@@ -76,4 +76,4 @@ private:
 
 };
 
-#endif //LIBRPLY_PLYLOADER_HPP
+#endif //O_RPLY_PLYLOADER_HPP
