@@ -1,6 +1,8 @@
 # O rply?
 
-_**O rply?**_ is a C/C++ library for PLY file format load and store. You might ask o rly? But yes! It is built over [RPly 1.1.4 by Diego Nehab](http://w3.impa.br/~diego/software/rply/) with three improvements: 1) [CMake build](CMakeLists.txt) 2) in-memory load and story; and 3) implementation of a [simple loader](simple_loader/). 
+_**O rply?**_ is a C/C++ library for PLY file format load and store. You might ask o rly? But yes! It is built over [RPly 1.1.4 by Diego Nehab](http://w3.impa.br/~diego/software/rply/) with three improvements: 1) [CMake build](CMakeLists.txt) 2) in-memory load and store; and 3) implementation of a [simple loader for PLY files](simple_loader/). 
+
+This _petite library_ exists only due to the immense work of [Diego Nehab](http://w3.impa.br/~diego/). Thank you!
 
 ![Build (linux/gcc9)](https://github.com/quepas/o-rply/workflows/Build%20(linux/gcc9)/badge.svg?branch=master)
 
