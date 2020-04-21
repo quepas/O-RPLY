@@ -331,12 +331,9 @@ static int BREFILL(p_ply ply) {
     /* fill remaining with new data */
     if (ply->in_memory) {
         size_t to_read = BUFFERSIZE-size-1;
-        size_t idx = 0;
-        for (; idx < to_read; ++idx) {
-            *(ply->buffer+size+idx) = *(ply->load_memory);
-            ply->load_memory++;
-        }
-        size = idx;
+        memcpy(ply->buffer+size, ply->load_memory, to_read);
+        ply->load_memory += to_read;
+        size = to_read;
     } else {
         size = fread(ply->buffer+size, 1, BUFFERSIZE-size-1, ply->fp);
     }
@@ -1231,13 +1228,9 @@ static int ply_read_chunk(p_ply ply, void *anybuffer, size_t size) {
         } else {
             ply->buffer_first = 0;
             if (ply->in_memory) {
-                size_t to_read = BUFFERSIZE;
-                size_t idx = 0;
-                for (; idx < to_read; ++idx) {
-                    *(ply->buffer+idx) = *(ply->load_memory);
-                    ply->load_memory++;
-                }
-                ply->buffer_last = idx;
+                memcpy(ply->buffer, ply->load_memory, BUFFERSIZE);
+                ply->load_memory += BUFFERSIZE;
+                ply->buffer_last = BUFFERSIZE;
             } else {
                 ply->buffer_last = fread(ply->buffer, 1, BUFFERSIZE, ply->fp);
             }
